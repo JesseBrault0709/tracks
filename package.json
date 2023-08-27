@@ -1,18 +1,22 @@
 {
-    "name": "tm",
-    "version": "0.0.1",
-    "description": "",
-    "main": "index.js",
+    "name": "tracks",
+    "version": "0.1.0",
+    "description": "A library for writing RailCraft-related programs in ComputerCraft 1.75/Minecraft 1.7.10.",
+    "keywords": [
+        "typescript-to-lua",
+        "minecraft",
+        "computercraft",
+        "computronics",
+        "railcraft"
+    ],
     "scripts": {
         "build": "tstl"
     },
-    "keywords": [],
-    "author": "",
+    "author": "jessebrault0709",
     "license": "ISC",
     "devDependencies": {
         "@jessebrault0709/cc-types": "^0.1.2",
         "@jessebrault0709/computronics-types": "^0.1.1",
-        "busted-tstl": "^0.1.2-rc.0",
         "lua-types": "^2.13.1",
         "typescript-to-lua": "^1.18.0"
     },
