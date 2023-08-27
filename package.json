@@ -1,5 +1,5 @@
 {
-    "name": "tracks",
+    "name": "@jessebrault0709/tracks",
     "version": "0.1.0",
     "description": "A library for writing RailCraft-related programs in ComputerCraft 1.75/Minecraft 1.7.10.",
     "keywords": [
