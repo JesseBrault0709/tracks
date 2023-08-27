@@ -4,21 +4,19 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "build": "tstl",
-        "dev": "tstl --watch"
+        "build": "tstl"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "devDependencies": {
         "@jessebrault0709/cc-types": "^0.1.2",
+        "@jessebrault0709/computronics-types": "^0.1.1",
         "busted-tstl": "^0.1.2-rc.0",
-        "computronics-types": "file:../computronics-types",
         "lua-types": "^2.13.1",
         "typescript-to-lua": "^1.18.0"
     },
     "dependencies": {
-        "@jessebrault0709/cube": "^0.1.3"
+        "@jessebrault0709/cube": "^0.1.6"
     }
 }

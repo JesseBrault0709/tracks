@@ -8,13 +8,12 @@
         "types": [
             "lua-types/5.2",
             "@jessebrault0709/cc-types",
-            "computronics-types",
-            "busted-tstl",
-            "@jessebrault0709/cube"
+            "@jessebrault0709/computronics-types",
+            "@jessebrault0709/cube",
+            "busted-tstl"
         ]
     },
     "tstl": {
-        "buildMode": "library",
         "noImplicitSelf": true,
         "luaTarget": "5.2"
     }
