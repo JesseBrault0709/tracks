@@ -1,4 +1,4 @@
-import { EventBus } from 'cube/dist/event-bus'
+import { EventBus } from '@jessebrault0709/cube'
 import { InSignal } from './InSignal'
 import { signals } from './signals'
 
@@ -17,27 +17,17 @@ class InSignalImpl implements InSignal {
         private readonly box: DigitalReceiverBox,
         eventBus: EventBus
     ) {
-        eventBus.subscribe(
-            'aspect_changed',
-            (
-                eventBoxName: string,
-                eventSignalName: string,
-                eventAspect: number
-            ) => {
-                if (
-                    eventBoxName === boxName &&
-                    eventSignalName === signalName
-                ) {
-                    if (eventAspect === signals.green) {
-                        this.onChangeCallbacks.forEach(cb => cb())
-                        this.onClearCallbacks.forEach(cb => cb())
-                    } else {
-                        this.onChangeCallbacks.forEach(cb => cb())
-                        this.onOccupiedCallbacks.forEach(cb => cb())
-                    }
+        eventBus.subscribe('aspect_changed', (eventBoxName: string, eventSignalName: string, eventAspect: number) => {
+            if (eventBoxName === boxName && eventSignalName === signalName) {
+                if (eventAspect === signals.green) {
+                    this.onChangeCallbacks.forEach(cb => cb())
+                    this.onClearCallbacks.forEach(cb => cb())
+                } else {
+                    this.onChangeCallbacks.forEach(cb => cb())
+                    this.onOccupiedCallbacks.forEach(cb => cb())
                 }
             }
-        )
+        })
     }
 
     onChange(cb: () => void): void {
@@ -61,27 +51,15 @@ class InSignalImpl implements InSignal {
     }
 }
 
-export const getWiredReceiver = (
-    boxName: string,
-    box: DigitalReceiverBox,
-    eventBus: EventBus
-): WiredReceiver => new WiredReceiverImpl(boxName, box, eventBus)
+export const getWiredReceiver = (boxName: string, box: DigitalReceiverBox, eventBus: EventBus): WiredReceiver =>
+    new WiredReceiverImpl(boxName, box, eventBus)
 
 class WiredReceiverImpl implements WiredReceiver {
     private readonly inSignals: Record<string, InSignal> = {}
 
-    constructor(
-        private readonly boxName: string,
-        box: DigitalReceiverBox,
-        eventBus: EventBus
-    ) {
+    constructor(private readonly boxName: string, box: DigitalReceiverBox, eventBus: EventBus) {
         box.getSignalNames().forEach(signalName => {
-            this.inSignals[signalName] = new InSignalImpl(
-                signalName,
-                this.boxName,
-                box,
-                eventBus
-            )
+            this.inSignals[signalName] = new InSignalImpl(signalName, this.boxName, box, eventBus)
         })
     }
 

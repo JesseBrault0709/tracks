@@ -12,12 +12,13 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
+        "@jessebrault0709/cc-types": "^0.1.2",
         "busted-tstl": "^0.1.2-rc.0",
         "computronics-types": "file:../computronics-types",
         "lua-types": "^2.13.1",
         "typescript-to-lua": "^1.18.0"
     },
     "dependencies": {
-        "cube": "file:../cube"
+        "@jessebrault0709/cube": "^0.1.3"
     }
 }

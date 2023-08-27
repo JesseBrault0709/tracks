@@ -1,5 +1,4 @@
-import { EventBus } from 'cube/dist/event-bus'
-import { TimerManager } from 'cube/dist/timerManager'
+import { EventBus, TimerManager } from '@jessebrault0709/cube'
 
 const FILTER_TIMER_LENGTH = 3
 
@@ -21,24 +20,16 @@ export type DetectorConfig = {
     onDetect: (this: void, params: OnDetectParams) => void
 }
 
-const wireDetector = (
-    detectorName: string,
-    config: DetectorConfig,
-    eventBus: EventBus,
-    timerManager: TimerManager
-) => {
+const wireDetector = (detectorName: string, config: DetectorConfig, eventBus: EventBus, timerManager: TimerManager) => {
     if (config.remoteId !== undefined) {
-        eventBus.subscribe(
-            'rednet_message',
-            (senderId: number, msg: string) => {
-                if (senderId === config.remoteId) {
-                    const event = textutils.unserialize<DetectorEvent>(msg)
-                    config.onDetect({
-                        event
-                    })
-                }
+        eventBus.subscribe('rednet_message', (senderId: number, msg: string) => {
+            if (senderId === config.remoteId) {
+                const event = textutils.unserialize<DetectorEvent>(msg)
+                config.onDetect({
+                    event
+                })
             }
-        )
+        })
     }
 
     let filtering = false

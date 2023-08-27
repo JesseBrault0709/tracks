@@ -7,9 +7,10 @@
         "strict": true,
         "types": [
             "lua-types/5.2",
-            "cc-types",
+            "@jessebrault0709/cc-types",
             "computronics-types",
-            "busted-tstl"
+            "busted-tstl",
+            "@jessebrault0709/cube"
         ]
     },
     "tstl": {
