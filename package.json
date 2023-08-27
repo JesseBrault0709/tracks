@@ -1,0 +1,23 @@
+{
+    "name": "tm",
+    "version": "0.0.1",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "tstl",
+        "dev": "tstl --watch"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "busted-tstl": "^0.1.2-rc.0",
+        "computronics-types": "file:../computronics-types",
+        "lua-types": "^2.13.1",
+        "typescript-to-lua": "^1.18.0"
+    },
+    "dependencies": {
+        "cube": "file:../cube"
+    }
+}

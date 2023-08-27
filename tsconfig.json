@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "declaration": true,
+        "lib": ["ESNext"],
+        "moduleResolution": "node",
+        "outDir": "dist",
+        "strict": true,
+        "types": [
+            "lua-types/5.2",
+            "cc-types",
+            "computronics-types",
+            "busted-tstl"
+        ]
+    },
+    "tstl": {
+        "buildMode": "library",
+        "noImplicitSelf": true,
+        "luaTarget": "5.2"
+    }
+}
