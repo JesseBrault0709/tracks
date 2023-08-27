@@ -3,11 +3,7 @@ import { OutSignal } from './OutSignal'
 
 export type Interlock = {
     name: string
-    queueGreen: (
-        outSignal: OutSignal,
-        checkSignals: ReadonlyArray<InSignal>,
-        cb?: () => void
-    ) => void
+    queueGreen: (outSignal: OutSignal, checkSignals: ReadonlyArray<InSignal>, cb?: () => void) => void
     setAllRed: () => void
 }
 
@@ -16,19 +12,13 @@ export type InterlockConfig = {
     outSignals: ReadonlyArray<OutSignal>
 }
 
-export const wireInterlocks = <
-    C extends { [interlockName: string]: InterlockConfig }
->(
+export const wireInterlocks = <C extends { [interlockName: string]: InterlockConfig }>(
     configs: C
 ): { [K in keyof C]: Interlock } => {
     const result: Record<string, Interlock> = {}
 
     Object.entries(configs).forEach(([interlockName, config]) => {
-        result[interlockName] = new InterlockImpl(
-            interlockName,
-            config.inSignals,
-            config.outSignals
-        )
+        result[interlockName] = new InterlockImpl(interlockName, config.inSignals, config.outSignals)
     })
 
     return result as { [K in keyof C]: Interlock }
@@ -112,11 +102,7 @@ class InterlockImpl implements Interlock {
         )
     }
 
-    queueGreen(
-        outSignal: OutSignal,
-        checkSignals: ReadonlyArray<InSignal>,
-        cb?: () => void
-    ) {
+    queueGreen(outSignal: OutSignal, checkSignals: ReadonlyArray<InSignal>, cb?: () => void) {
         this.greenQueue = [...this.greenQueue, { outSignal, checkSignals, cb }]
         this.doQueue()
     }

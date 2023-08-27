@@ -10,7 +10,8 @@
         "railcraft"
     ],
     "scripts": {
-        "build": "tstl"
+        "build": "tstl",
+        "clean": "rm -rf dist"
     },
     "author": "jessebrault0709",
     "license": "ISC",
@@ -22,5 +23,11 @@
     },
     "dependencies": {
         "@jessebrault0709/cube": "^0.1.6"
-    }
+    },
+    "files": [
+        "dist/**/*.d.ts",
+        "dist/**/*.lua"
+    ],
+    "types": "dist/index.d.ts",
+    "main": "dist/index"
 }

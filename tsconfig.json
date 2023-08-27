@@ -5,16 +5,10 @@
         "moduleResolution": "node",
         "outDir": "dist",
         "strict": true,
-        "types": [
-            "lua-types/5.2",
-            "@jessebrault0709/cc-types",
-            "@jessebrault0709/computronics-types",
-            "@jessebrault0709/cube",
-            "busted-tstl"
-        ]
+        "types": ["@jessebrault0709/cc-types", "@jessebrault0709/computronics-types", "@jessebrault0709/cube"]
     },
     "tstl": {
-        "noImplicitSelf": true,
-        "luaTarget": "5.2"
+        "buildMode": "library",
+        "noImplicitSelf": true
     }
 }
