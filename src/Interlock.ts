@@ -70,36 +70,19 @@ class InterlockImpl implements Interlock {
     }
 
     private doQueue() {
-        const newQueue = this.greenQueue.reduce<{
-            newQueue: QueuedGreen[]
-            successAlready: boolean
-        }>(
-            ({ newQueue, successAlready }, queuedGreen) => {
-                if (successAlready) {
-                    return {
-                        successAlready,
-                        newQueue: [...newQueue, queuedGreen]
-                    }
-                } else {
-                    const success = this.tryGreen(queuedGreen)
-                    if (success) {
-                        return {
-                            newQueue,
-                            successAlready: true
-                        }
-                    } else {
-                        return {
-                            successAlready, // false
-                            newQueue: [...newQueue, queuedGreen]
-                        }
-                    }
+        const newGreenQueue: QueuedGreen[] = []
+        let success = false
+        for (const queuedGreen of this.greenQueue) {
+            if (success) {
+                newGreenQueue.push(queuedGreen)
+            } else {
+                success = this.tryGreen(queuedGreen)
+                if (!success) {
+                    newGreenQueue.push(queuedGreen)
                 }
-            },
-            {
-                newQueue: [],
-                successAlready: false
             }
-        )
+        }
+        this.greenQueue = newGreenQueue
     }
 
     queueGreen(outSignal: OutSignal, checkSignals: ReadonlyArray<InSignal>, cb?: () => void) {

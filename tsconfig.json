@@ -3,6 +3,7 @@
         "declaration": true,
         "lib": ["ESNext"],
         "moduleResolution": "node",
+        "rootDir": "src",
         "outDir": "dist",
         "strict": true,
         "types": ["@jessebrault0709/cc-types", "@jessebrault0709/computronics-types", "@jessebrault0709/cube"]
