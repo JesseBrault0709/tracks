@@ -15,7 +15,9 @@
     },
     "author": "jessebrault0709",
     "license": "ISC",
-    "repository": "https://github.com/JesseBrault0709/tracks",
+    "repository": {
+        "url": "https://github.com/JesseBrault0709/tracks"
+    },
     "devDependencies": {
         "@jessebrault0709/cc-types": "^0.1.2",
         "@jessebrault0709/computronics-types": "^0.1.1",
