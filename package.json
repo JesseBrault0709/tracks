@@ -16,7 +16,7 @@
     "author": "jessebrault0709",
     "license": "ISC",
     "repository": {
-        "url": "https://github.com/JesseBrault0709/tracks"
+        "url": "git+https://github.com/JesseBrault0709/tracks.git"
     },
     "devDependencies": {
         "@jessebrault0709/cc-types": "^0.1.2",
