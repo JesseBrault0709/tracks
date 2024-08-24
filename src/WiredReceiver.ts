@@ -1,4 +1,4 @@
-import { EventBus } from '@jessebrault0709/cube'
+import { EventBus, TimerManager } from '@jessebrault0709/cube'
 import { InSignal } from './InSignal'
 import { signals } from './signals'
 
@@ -11,9 +11,21 @@ class InSignalImpl implements InSignal {
     private readonly onOccupiedCallbacks: Array<() => void> = []
     private readonly onClearCallbacks: Array<() => void> = []
 
-    constructor(readonly name: string, boxName: string, private readonly box: DigitalReceiverBox, eventBus: EventBus) {
+    constructor(
+        readonly name: string,
+        boxName: string,
+        private readonly box: DigitalReceiverBox,
+        timerManager: TimerManager,
+        filterLength: number,
+        eventBus: EventBus
+    ) {
+        let filtering = false
         eventBus.subscribe('aspect_changed', (eventBoxName: string, eventSignalName: string, eventAspect: number) => {
-            if (eventBoxName === boxName && eventSignalName === name) {
+            if (eventBoxName === boxName && eventSignalName === name && !filtering) {
+                filtering = true
+                timerManager.start(filterLength, () => {
+                    filtering = false
+                })
                 if (eventAspect === signals.green) {
                     this.onChangeCallbacks.forEach(cb => cb())
                     this.onClearCallbacks.forEach(cb => cb())
@@ -46,15 +58,33 @@ class InSignalImpl implements InSignal {
     }
 }
 
-export const getWiredReceiver = (boxName: string, box: DigitalReceiverBox, eventBus: EventBus): WiredReceiver =>
-    new WiredReceiverImpl(boxName, box, eventBus)
+export const getWiredReceiver = (
+    boxName: string,
+    box: DigitalReceiverBox,
+    timerManager: TimerManager,
+    filterLength: number,
+    eventBus: EventBus
+): WiredReceiver => new WiredReceiverImpl(boxName, box, timerManager, filterLength, eventBus)
 
 class WiredReceiverImpl implements WiredReceiver {
     private readonly inSignals: Record<string, InSignal> = {}
 
-    constructor(private readonly boxName: string, box: DigitalReceiverBox, eventBus: EventBus) {
+    constructor(
+        private readonly boxName: string,
+        box: DigitalReceiverBox,
+        timerManager: TimerManager,
+        filterLength: number,
+        eventBus: EventBus
+    ) {
         box.getSignalNames().forEach(signalName => {
-            this.inSignals[signalName] = new InSignalImpl(signalName, this.boxName, box, eventBus)
+            this.inSignals[signalName] = new InSignalImpl(
+                signalName,
+                this.boxName,
+                box,
+                timerManager,
+                filterLength,
+                eventBus
+            )
         })
     }
 

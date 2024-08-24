@@ -1,6 +1,6 @@
 {
     "name": "@jessebrault0709/tracks",
-    "version": "0.2.4",
+    "version": "0.2.5",
     "description": "A library for writing RailCraft-related programs in ComputerCraft 1.75/Minecraft 1.7.10.",
     "keywords": [
         "typescript-to-lua",
@@ -12,6 +12,7 @@
     "scripts": {
         "build": "tstl",
         "clean": "rm -rf dist",
+        "dev": "tstl --watch",
         "test": "tstl && ./test.sh"
     },
     "author": "jessebrault0709",
