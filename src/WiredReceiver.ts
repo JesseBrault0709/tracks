@@ -11,14 +11,9 @@ class InSignalImpl implements InSignal {
     private readonly onOccupiedCallbacks: Array<() => void> = []
     private readonly onClearCallbacks: Array<() => void> = []
 
-    constructor(
-        private readonly signalName: string,
-        boxName: string,
-        private readonly box: DigitalReceiverBox,
-        eventBus: EventBus
-    ) {
+    constructor(readonly name: string, boxName: string, private readonly box: DigitalReceiverBox, eventBus: EventBus) {
         eventBus.subscribe('aspect_changed', (eventBoxName: string, eventSignalName: string, eventAspect: number) => {
-            if (eventBoxName === boxName && eventSignalName === signalName) {
+            if (eventBoxName === boxName && eventSignalName === name) {
                 if (eventAspect === signals.green) {
                     this.onChangeCallbacks.forEach(cb => cb())
                     this.onClearCallbacks.forEach(cb => cb())
@@ -43,11 +38,11 @@ class InSignalImpl implements InSignal {
     }
 
     isClear(): boolean {
-        return this.box.getAspect(this.signalName) === 1
+        return this.box.getAspect(this.name) === 1
     }
 
     isOccupied(): boolean {
-        return this.box.getAspect(this.signalName) !== 1
+        return this.box.getAspect(this.name) !== 1
     }
 }
 

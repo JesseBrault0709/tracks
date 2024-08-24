@@ -1,6 +1,6 @@
 {
     "name": "@jessebrault0709/tracks",
-    "version": "0.2.3",
+    "version": "0.2.4",
     "description": "A library for writing RailCraft-related programs in ComputerCraft 1.75/Minecraft 1.7.10.",
     "keywords": [
         "typescript-to-lua",
@@ -11,7 +11,8 @@
     ],
     "scripts": {
         "build": "tstl",
-        "clean": "rm -rf dist"
+        "clean": "rm -rf dist",
+        "test": "tstl && ./test.sh"
     },
     "author": "jessebrault0709",
     "license": "ISC",
@@ -21,6 +22,7 @@
     "devDependencies": {
         "@jessebrault0709/cc-types": "^0.1.2",
         "@jessebrault0709/computronics-types": "^0.1.1",
+        "busted-tstl": "^0.1.2-rc.0",
         "lua-types": "^2.13.1",
         "typescript-to-lua": "^1.26.2"
     },
@@ -29,7 +31,9 @@
     },
     "files": [
         "dist/**/*.d.ts",
-        "dist/**/*.lua"
+        "dist/**/*.lua",
+        "!dist/**/*.test.d.ts",
+        "!dist/**/*.test.lua"
     ],
     "types": "dist/index.d.ts",
     "main": "dist/index"

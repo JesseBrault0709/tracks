@@ -1,6 +1,7 @@
 import { WiredReceiver } from './WiredReceiver'
 
 export interface InSignal {
+    name: string
     onChange(cb: () => void): void
     onClear(cb: () => void): void
     onOccupied(cb: () => void): void

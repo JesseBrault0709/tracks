@@ -1,15 +1,22 @@
+import { Logger } from '@jessebrault0709/cube'
 import { InSignal } from './InSignal'
 import { OutSignal } from './OutSignal'
 
 export type Interlock = {
     name: string
-    queueGreen: (outSignal: OutSignal, checkSignals: ReadonlyArray<InSignal>, cb?: () => void) => void
+    queueGreen: (
+        outSignal: OutSignal,
+        checkSignals: ReadonlyArray<InSignal>,
+        cb?: () => void,
+        debugName?: string
+    ) => void
     setAllRed: () => void
 }
 
 export type InterlockConfig = {
     inSignals: ReadonlyArray<InSignal>
     outSignals: ReadonlyArray<OutSignal>
+    logger: Logger
 }
 
 export const wireInterlocks = <C extends { [interlockName: string]: InterlockConfig }>(
@@ -18,7 +25,7 @@ export const wireInterlocks = <C extends { [interlockName: string]: InterlockCon
     const result: Record<string, Interlock> = {}
 
     Object.entries(configs).forEach(([interlockName, config]) => {
-        result[interlockName] = new InterlockImpl(interlockName, config.inSignals, config.outSignals)
+        result[interlockName] = new InterlockImpl(interlockName, config.inSignals, config.outSignals, config.logger)
     })
 
     return result as { [K in keyof C]: Interlock }
@@ -28,6 +35,19 @@ type QueuedGreen = {
     outSignal: OutSignal
     checkSignals: ReadonlyArray<InSignal>
     cb?: () => void
+    debugName?: string
+}
+
+const formatGreenQueue = (greenQueue: ReadonlyArray<QueuedGreen>) => {
+    let acc = ''
+    for (let i = 0; i < greenQueue.length; i++) {
+        if (i > 0) {
+            acc += ', '
+        }
+        const { debugName, outSignal } = greenQueue[i]
+        acc += debugName ?? outSignal.name
+    }
+    return acc
 }
 
 class InterlockImpl implements Interlock {
@@ -36,40 +56,41 @@ class InterlockImpl implements Interlock {
     constructor(
         public readonly name: string,
         private readonly inSignals: ReadonlyArray<InSignal>,
-        private readonly outSignals: ReadonlyArray<OutSignal>
+        private readonly outSignals: ReadonlyArray<OutSignal>,
+        private readonly logger: Logger
     ) {
         this.inSignals.forEach(inSignal => {
             inSignal.onClear(() => {
+                this.logDebug('inSignal cleared, running doQueue...')
                 this.doQueue()
             })
-
             inSignal.onOccupied(() => this.setAllRed())
         })
-
         this.setAllRed()
     }
 
-    private formatMsg(msg: any): string {
-        return `Interlock ${this.name}: ${msg}`
+    private logDebug(msg: string) {
+        this.logger.debug(this.name + ': ' + msg)
     }
 
-    private tryGreen(queuedGreen: QueuedGreen): boolean {
-        const isClear = queuedGreen.checkSignals.reduce<boolean>(
-            (prev, checkSignal) => prev && checkSignal.isClear(),
-            true
-        )
-        if (isClear) {
-            queuedGreen.outSignal.setGreen()
-            if (queuedGreen.cb !== undefined) {
-                queuedGreen.cb()
+    private tryGreen({ checkSignals, outSignal, cb }: QueuedGreen): boolean {
+        this.logDebug(`trying green for ${outSignal.name}`)
+        for (const checkSignal of checkSignals) {
+            if (!checkSignal.isClear()) {
+                this.logDebug(`${checkSignal.name} is not clear`)
+                return false
             }
-            return true
-        } else {
-            return false
         }
+        this.logDebug(`setting ${outSignal.name} to green`)
+        outSignal.setGreen()
+        if (cb !== undefined) {
+            cb()
+        }
+        return true
     }
 
     private doQueue() {
+        this.logDebug(`before doQueue: [${formatGreenQueue(this.greenQueue)}]`)
         const newGreenQueue: QueuedGreen[] = []
         let success = false
         for (const queuedGreen of this.greenQueue) {
@@ -83,10 +104,11 @@ class InterlockImpl implements Interlock {
             }
         }
         this.greenQueue = newGreenQueue
+        this.logDebug(`after doQueue: [${formatGreenQueue(this.greenQueue)}]`)
     }
 
-    queueGreen(outSignal: OutSignal, checkSignals: ReadonlyArray<InSignal>, cb?: () => void) {
-        this.greenQueue = [...this.greenQueue, { outSignal, checkSignals, cb }]
+    queueGreen(outSignal: OutSignal, checkSignals: ReadonlyArray<InSignal>, cb?: () => void, debugName?: string) {
+        this.greenQueue = [...this.greenQueue, { outSignal, checkSignals, cb, debugName }]
         this.doQueue()
     }
 
